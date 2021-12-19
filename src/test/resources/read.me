@@ -1,0 +1,46 @@
+================================================================================================================
+Architecture
+================================================================================================================
+To get the serenityBDD framework working please note the points below:
+1. use the pom.xml which has all the dependencies needed.
+2. Need a runner class (I have created one called RunCukesIT under a runner package but u can name it whatever you want.
+   But note you need to update the includes part of the pom.xml so it know where to find the runner class. In this case i have
+   entered: 	<include>**/runner/**/*.java</include> which says run any classes under the runner package
+3. Add the location of the feature file in your runner class and glue it your steps @CucumberOptions(features = "src/test/resources/features", glue="Steps")
+4. you need to specify the drivers - I have put them under resources/drivers/windows/  - this hierarchy also needs to be mimiced in
+   the serenity.conf file:
+
+    drivers {
+
+	   windows {
+	       webdriver.chrome.driver=src/test/resources/drivers/windows/chromedriver.exe
+	       webdriver.gecko.driver=src/test/resources/drivers/windows/geckodriver.exe
+	}
+5. you can properties here or serenity.properties file. I have added serenity.take.screenshots=AFTER_EACH_STEP property in the
+   serenity.conf file.
+   In the serenity.properties file I have added the baseurl webdriver.base.url=https://automationintesting.com/selenium/testpage/
+   This is what url it will open as default.
+   To open the url you must call the .open() method (see FormSteps class  testpageFormPage.open();)
+   note no webdriver was mentioned.
+   to run on different browsers you can just mention it context:
+   mvn clean verify  -Dcontext=firefox -Dwebdriver.driver=firefox
+   mvn clean verify  -Dcontext=chrome -Dwebdriver.driver=chrome
+   SerenityBDD will find the correct driver defined by the path in your serenity.cnf file and open the browser as per your
+   command line context.
+6. To use the selenium wrap-around methods the class must extend PageObject and use the @Runwith annotation as per FormPage
+    @RunWith(SerenityRunner.class)
+    public class FormPage extends PageObject {
+    }
+7. The page object model I have Implemented is feature - > Step definition - > page (this extends pageobject)
+
+================================================================================================================
+To execute from maven
+================================================================================================================
+#runs all the tests
+mvn clean verify  -Dcontext=chrome -Dwebdriver.driver=chrome
+#runs specific tag
+mvn clean verify  -Dcontext=chrome -Dwebdriver.driver=chrome -Dcucumber.options="--tags @forms"
+#runs specific tag using a specific env (see serenity.conf)
+mvn clean verify  -Dcontext=chrome -Dwebdriver.driver=chrome -Dcucumber.options="--tags  @forms" -Denvironment=adv
+
+
