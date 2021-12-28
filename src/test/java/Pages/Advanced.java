@@ -1,28 +1,24 @@
 package Pages;
 
-import net.serenitybdd.core.annotations.findby.FindBy;
-import net.serenitybdd.core.pages.WebElementFacade;
 import net.serenitybdd.junit.runners.SerenityRunner;
-import net.thucydides.core.annotations.DefaultUrl;
-import org.junit.Assert;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import utilities.BasePageObject;
 
 import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SerenityRunner.class)
 public class Advanced extends BasePageObject {
 
 
     public void verifyTableData(String tableId, List<Map<String, String>> testData) throws InterruptedException {
-        //click on the menu option for dynamic table
-        getDriver().findElement(By.xpath("//*[@id=\"dynamictablestest\"]")).click();
 
         //get the table
         WebElement simpleTable = getDriver().findElement(By.id(tableId));
@@ -30,17 +26,44 @@ public class Advanced extends BasePageObject {
         //Get all rows
         List<WebElement> rows = simpleTable.findElements(By.tagName("tr"));
         assertEquals(3, rows.size());
+        assertTrue(verifyvalue(rows,testData));
+    }
 
-        // loop through each row
-        for (WebElement row : rows) {
-            List<WebElement> cols = row.findElements(By.tagName("td"));
-            for (WebElement col : cols) {
-                System.out.print(col.getText() + "\t");
+    public boolean verifyvalue ( List<WebElement> rows, List<Map<String, String>> testData) {
+        int status = 0;
+
+        for (int i = 0; i < testData.size(); i++) {
+            for (WebElement row : rows) {
+                List<WebElement> cols = row.findElements(By.tagName("td"));
+                for (WebElement col : cols) {
+                    System.out.println("col = " + col.getText());
+                    if ((testData.get(i).get("name").equals(col.getText())) | (testData.get(i).get("age").equals(col.getText()))) {
+                        status++;
+                    }
+                }
             }
-            System.out.println();
         }
+        return (status==testData.size()*2);
     }
 
 
+    public void clickOnH1itemWithinFrame(String framename, String item) throws Exception {
+        getDriver().switchTo().defaultContent();
+        waitUntilTheFrameIsVisibleAndSwitch("//*[@id=\""+framename+"\"]");
+        getDriver().findElement(By.xpath("//h1[contains(text(),\"" + item + "\")]")).click();
+    }
+
+
+    public void clickOnLiitemWithinFrame(String framename, String item, String text) throws Exception {
+        getDriver().switchTo().defaultContent();
+        waitUntilTheFrameIsVisibleAndSwitch("//*[@id=\""+framename+"\"]");
+        WebElement el = getDriver().findElement(By.xpath("//li[@id=\"" + item + "\"]"));
+        System.out.println("li text is: " + el.getText());
+        assertEquals(el.getText(), text);
+    }
+
+    public void clickOnMenuItem(String item) {
+        getDriver().findElement(By.xpath("//*[@id=\""+item+"\"]")).click();
+    }
 }
 

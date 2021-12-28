@@ -29,4 +29,13 @@ public class BasePageObject extends PageObject {
             }
         }
     }
+
+    public void waitUntilTheFrameIsVisibleAndSwitch(String xpath) throws Exception {
+        try {
+            WebDriverWait wait = new WebDriverWait(getDriver(), 30, 1000);
+            wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(By.xpath(xpath)));
+        } catch (Exception e) {
+            throw new Exception("Unable to find the frame   :" + e.getMessage());
+        }
+    }
 }
