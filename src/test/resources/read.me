@@ -1,4 +1,12 @@
 ================================================================================================================
+This frmework is selenium bdd - it provides wrapper classes for selenium/rest assured. with Selenium you extend your classes
+from PagePbject and you can use the wrapper classees.
+- no need to worry about closing browsers, time outs etc
+- provides a nice report with screen shots
+I have integrated Spring so that we can have internal applcation properties, and also we ca use autowire for some classes which
+we could to share data amongst step definitions
+
+================================================================================================================
 Architecture
 ================================================================================================================
 To get the serenityBDD framework working please note the points below:
@@ -91,9 +99,23 @@ mvn clean verify  -Dcontext=chrome -Dwebdriver.driver=chrome -Dcucumber.options=
 #runs specific tag using a specific env (see serenity.conf)
 #runs the adv feature with a differnent url configured in the serinity.conf file.
 mvn clean verify  -Dcontext=chrome -Dwebdriver.driver=chrome -Dcucumber.options="--tags @frame" -Denvironment=adv
+mvn clean verify serenity:aggregate -Dcucumber.options="--tags @restassured"
 
 ================================================================================================================
 To Debug
 ================================================================================================================
 Right click on feature file and click 'Debug' - this will create a config which you can then edit and add the command line parameters
 (see config.JPG)
+
+================================================================================================================
+https://natritmeyer.com/howto/cucumber-jvm-dependency-injection-with-spring/
+Adding Spring to the framework - we can't the usual way we (as above) need to follow: https://www.baeldung.com/serenity-spring-jbehave
+For this reason not adding spring with serenity.
+I have found a way around and that is:
+1. add spring dependencies to POM (verion is important) see "Adding Spring Assured dependencies" comment in pom file.
+2. add appconfig class under package config (test/java)
+3. add application properties file (root of resources folder)
+4. add @ContextConfiguration(classes = {Appconfig.class}) to the step cass (AdvStep)
+5. You can now use autowire/property value etc...
+6. just remember to use @ContextConfiguration(classes = {Appconfig.class}) at the top of the class definition for it to work.
+================================================================================================================

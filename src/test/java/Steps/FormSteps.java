@@ -2,13 +2,19 @@ package Steps;
 
 import Pages.Advanced;
 import Pages.FormPage;
+import config.Appconfig;
 import cucumber.api.java.en.Given;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.test.context.ContextConfiguration;
 
 import java.util.List;
 import java.util.Map;
 
-//@RunWith(SerenityRunner.class)
+@ContextConfiguration(classes = {Appconfig.class})
 public class FormSteps {
+
+    @Value("${user}")
+    private String user;
 
     FormPage testpageFormPage;
     Advanced advanced;
@@ -27,6 +33,7 @@ public class FormSteps {
     //text
     @Given("^user enters \"([^\"]*)\" as firstname")
     public void verifyFirstName(String firsName) {
+        System.out.println("property user (forms) : " + this.user);
         testpageFormPage.verifyFirstName(firsName);
     }
 
