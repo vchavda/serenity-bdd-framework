@@ -11,6 +11,9 @@ Feature: Forms Search
       | name   | age |
       | Bob    | 20  |
       | George | 42  |
+    Given user test data table
+      | Type    | Question     | Answer     |
+      | testbox | phone number | 1234567890 |
 
   @frame
   Scenario: Advanced form search

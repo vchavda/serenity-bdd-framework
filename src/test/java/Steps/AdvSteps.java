@@ -27,6 +27,11 @@ public class AdvSteps {
         advanced.verifyTableData(tableid, testData);
     }
 
+    @Given ("^user test data table")
+    public void userTestData(List<Map<String, String>> testData){
+        Map<String, String> myTestData = testData.get(0);
+    }
+
 
     @Given("^user switches frames to \"([^\"]*)\" and clicks on the H1 item \"([^\"]*)\"")
     public void userSwitchesFramesAndClicksOnH1Item(String framename, String item) throws Exception {
